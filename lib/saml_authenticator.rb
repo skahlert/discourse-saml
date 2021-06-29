@@ -57,7 +57,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
                       slo_default_relay_state: SamlAuthenticator.saml_base_url,
                       idp_cert_fingerprint: GlobalSetting.try(:saml_cert_fingerprint),
                       idp_cert_fingerprint_algorithm: GlobalSetting.try(:saml_cert_fingerprint_algorithm),
-                      idp_cert: setting(:cert),
+                      idp_cert: ENV["DISCOURSE_SAML_CERT"],
                       idp_cert_multi: setting(:cert_multi),
                       request_attributes: request_attributes,
                       attribute_statements: attribute_statements,
