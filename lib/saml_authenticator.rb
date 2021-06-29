@@ -51,7 +51,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
   def register_middleware(omniauth)
     omniauth.provider :saml,
                       name: name,
-                      issuer: SamlAuthenticator.saml_base_url,
+                      issuer: GlobalSetting.try(:saml_issuer) || SamlAuthenticator.saml_base_url,
                       idp_sso_target_url: setting(:target_url),
                       idp_slo_target_url: setting(:slo_target_url),
                       slo_default_relay_state: SamlAuthenticator.saml_base_url,
@@ -70,7 +70,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
                       security: {
                         authn_requests_signed: !!GlobalSetting.try(:saml_authn_requests_signed),
                         want_assertions_signed: !!GlobalSetting.try(:saml_want_assertions_signed),
-                        logout_requests_signed: !!GlobalSetting.try(:saml_logout_requests_signed),                                                                                                                 
+                        logout_requests_signed: !!GlobalSetting.try(:saml_logout_requests_signed),
                         logout_responses_signed: !!GlobalSetting.try(:saml_logout_responses_signed),
                         signature_method: XMLSecurity::Document::RSA_SHA1
                       },

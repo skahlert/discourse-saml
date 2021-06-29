@@ -166,7 +166,7 @@ if request_method == 'post'
 
         settings.compress_request = false
         settings.passive = false
-        settings.issuer = SamlAuthenticator.saml_base_url
+        settings.issuer = GlobalSetting.try(:saml_issuer) || SamlAuthenticator.saml_base_url
         settings.assertion_consumer_service_url = SamlAuthenticator.saml_base_url + "/auth/saml/callback"
         settings.name_identifier_format = GlobalSetting.try(:saml_name_identifier_format) || "urn:oasis:names:tc:SAML:2.0:protocol"
 
@@ -216,7 +216,7 @@ end
 pretty_name = GlobalSetting.try(:saml_title) || "SAML"
 button_title = GlobalSetting.try(:saml_button_title) || GlobalSetting.try(:saml_title) || "with SAML"
 
-auth_provider title: button_title, 
+auth_provider title: button_title,
               pretty_name: pretty_name,
               authenticator: SamlAuthenticator.new('saml'),
               custom_url: request_method == 'post' ? "/discourse_saml" : nil
