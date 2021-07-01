@@ -112,14 +112,8 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     end
 
     result.username = begin
-      if attributes.present?
-        username = attributes['screenName'].try(:first)
-        username = attributes['uid'].try(:first) if GlobalSetting.try(:saml_use_uid)
-      end
-
-      username ||= UserNameSuggester.suggest(result.name) if result.name != uid
-      username ||= UserNameSuggester.suggest(result.email) if result.email != uid
       username ||= uid
+      username ||= UserNameSuggester.suggest(result.email) if result.email != uid
       username
     end
 
@@ -186,7 +180,8 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
 
   def auto_create_account(result)
     email = result.email
-    return if User.find_by_email(email).present?
+    username = result.username
+    return if User.find_by_username(username).present?
 
     # Use a mutex here to counter SAML responses that are sent at the same time and the same email payload
     DistributedMutex.synchronize("discourse_saml_#{email}") do
