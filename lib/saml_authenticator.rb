@@ -117,14 +117,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
       username
     end
 
-    result.name = begin
-      if attributes.present?
-        fullname = attributes['fullName'].try(:first)
-        fullname = "#{attributes['firstName'].try(:first)} #{attributes['lastName'].try(:first)}"
-      end
-      fullname ||= result.name
-      fullname
-    end
+    result.name = info[:name]
 
     if result.respond_to?(:skip_email_validation) && GlobalSetting.try(:saml_skip_email_validation)
       result.skip_email_validation = true
