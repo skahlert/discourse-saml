@@ -186,7 +186,8 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
 
   def auto_create_account(result)
     email = result.email
-    return if User.find_by_email(email).present?
+    username = result.username
+    return if User.find_by_username(username).present?
 
     # Use a mutex here to counter SAML responses that are sent at the same time and the same email payload
     DistributedMutex.synchronize("discourse_saml_#{email}") do
